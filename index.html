@@ -1,22 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="dark" data-dark-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-  </head>
-  <body>
+
+    <link
+      href="https://unpkg.com/@primer/css@^19.0.0/dist/primer.css"
+      rel="stylesheet"
+    />
+
     <script
+      defer
       src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
       referrerpolicy="no-referrer"
     ></script>
     <script
+      defer
       src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"
       integrity="sha512-SGWgwwRA8xZgEoKiex3UubkSkV1zSE1BS6O4pXcaxcNtUlQsOmOmhVnDwIvqGRfEmuz83tIGL13cXMZn6upPyg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="main.js"></script>
+    <script defer src="main.js"></script>
+  </head>
+  <body>
+    <div class="container-lg">
+      <header class="Header">
+        <div class="Header-item">
+          <div>
+            <h1 class="h3-mktg">NGS Data Parser</h1>
+            <h2 class="h4-mktg">for NGS Gear Planner</h2>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="d-flex p-responsive py-6">
+          <div class="flex-1" id="input">
+            <form id="input-csv">
+              <div class="form-group">
+                <div class="form-group-header">
+                  <label for="csv"><h3>Insert Text Here</h3></label>
+                </div>
+                <textarea name="csv" id="csv" class="form-control"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="csv-file" class="">or load .csv</label>
+                <input
+                  class="pl-2"
+                  type="file"
+                  name="csv-file"
+                  id="csv-file"
+                  accept=".csv"
+                />
+              </div>
+
+              <button type="submit" class="btn">Submit</button>
+            </form>
+          </div>
+
+          <div class="flex-1" id="output">
+            <div class="form-group">
+              <div class="form-group-header">
+                <h3>Output CSV</h3>
+              </div>
+              <div class="form-group-body">
+                <textarea
+                  class="form-control"
+                  name="csv-out"
+                  id="csv-out"
+                  readonly
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group-header">
+                <h3>Output JSON</h3>
+              </div>
+              <div class="form-group-body">
+                <textarea
+                  class="form-control"
+                  name="json-out"
+                  id="json-out"
+                  readonly
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

@@ -1,18 +1,53 @@
-const x =
-  'Name	BP	HP	PP	MEL Pot%	RNG Pot%	TEC Pot%	Pot Floor%	Dmg Resist%	Burn Resist%	Freeze Resist%	Shock Resist%	Blind Resist%	Panic Resist%	Poison Resist%	Pain Resist%	All Resist%	EXP Grind	Fire Pot%	Ice Pot%	Lightning Pot%	Wind Pot%	Light Pot%	Dark Pot%	Low Temp Resist%	Daytime Pot%	Nighttime Pot%';
-const y = x.split('\t');
-const z = y.map(e => _.camelCase(e));
-console.log(z.join('\t'));
+const $form = document.querySelector('form#input-csv');
+const $jsonOutTextArea = document.querySelector('textarea#json-out');
+const $csvOutTextArea = document.querySelector('textarea#csv-out');
+$form.addEventListener('submit', e => {
+  e.preventDefault();
+  const {
+    csv: { value }
+  } = e.target.elements;
+  const [csv, json] = parseDataCsv(value);
+  $csvOutTextArea.value = csv;
+  $jsonOutTextArea.value = JSON.stringify(json);
+});
 
-fetch('ngsdata.csv')
-  .then(res => res.text())
-  .then(res => {
-    const x = Papa.parse(res, {
-      header: true,
-      transformHeader: header => _.camelCase(header),
-      dynamicTyping: true,
-      transform: e => e.replace('%', '')
-    });
-    console.log(x.data);
-    console.log(Papa.unparse(x));
+const $csvFile = document.querySelector('form#input-csv');
+const $csvTextArea = document.querySelector('textarea#csv');
+$csvFile.addEventListener('change', e => {
+  if (!e.target.files) return;
+  const [file] = e.target.files;
+  if (!file) return;
+  file.text().then(val => {
+    console.log(val);
+    $csvTextArea.value = val;
   });
+});
+
+/**
+ * Parse direct exports from Google Sheets with Papa Parse
+ * @param {string} csv - CSV as a string.
+ * @returns {object} augments - Augment data keyed by augment name.
+ */
+function parseDataCsv(csv) {
+  const x = Papa.parse(csv, {
+    header: true,
+    transformHeader: header => _.camelCase(header),
+    dynamicTyping: true,
+    transform: e => e.replace('%', '').replace('?', 0)
+  });
+  const dataAsObject = x.data.reduce((augments, augment) => {
+    const newAugment = { ...augment };
+    if (augment.name.endsWith(' S')) {
+      newAugment.name = augment.name.slice(0, -2);
+      newAugment.hasCapsuleS = true;
+      augments[augment.name] = newAugment;
+    } else {
+      newAugment.hasCapsuleS = false;
+      augments[augment.name] = newAugment;
+    }
+    return augments;
+  }, {});
+  console.log(dataAsObject);
+  const newCsv = Papa.unparse(Object.values(dataAsObject));
+  return [newCsv, dataAsObject];
+}
